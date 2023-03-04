@@ -29,6 +29,7 @@ module.exports = {
       },
     ],
     'import/namespace': ['off'],
+    'import/no-named-as-default-member': 0,
     'import/order': [
       'error',
       {

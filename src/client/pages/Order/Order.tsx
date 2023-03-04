@@ -21,6 +21,10 @@ export const Order: FC = () => {
   const { submitOrder } = useSubmitOrder();
   const { order } = useOrder();
 
+  React.useEffect(() => {
+    document.title = '購入手続き';
+  }, []);
+
   if (authUserLoading) {
     return null;
   }
@@ -28,9 +32,6 @@ export const Order: FC = () => {
     navigate('/');
     return null;
   }
-  React.useEffect(() => {
-    document.title = '購入手続き';
-  }, []);
 
   const renderContents = () => {
     if (!authUser || order == undefined || order.items.length === 0) {

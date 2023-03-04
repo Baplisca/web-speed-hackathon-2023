@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import equal from 'fast-deep-equal';
 import type { FC } from 'react';
 import { memo } from 'react';
 
@@ -11,21 +11,24 @@ type Props = {
   featureSection: FeatureSectionFragmentResponse;
 };
 
-export const ProductList: FC<Props> = memo(({ featureSection }) => {
-  return (
-    <GetDeviceType>
-      {({ deviceType }) => {
-        switch (deviceType) {
-          case DeviceType.DESKTOP: {
-            return <ProductListSlider featureSection={featureSection} />;
+export const ProductList: FC<Props> = memo(
+  ({ featureSection }) => {
+    return (
+      <GetDeviceType>
+        {({ deviceType }) => {
+          switch (deviceType) {
+            case DeviceType.DESKTOP: {
+              return <ProductListSlider featureSection={featureSection} />;
+            }
+            case DeviceType.MOBILE: {
+              return <ProductGridList featureSection={featureSection} />;
+            }
           }
-          case DeviceType.MOBILE: {
-            return <ProductGridList featureSection={featureSection} />;
-          }
-        }
-      }}
-    </GetDeviceType>
-  );
-}, _.isEqual);
+        }}
+      </GetDeviceType>
+    );
+  },
+  (prev, next) => equal(prev, next),
+);
 
 ProductList.displayName = 'ProductList';
