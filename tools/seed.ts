@@ -344,28 +344,21 @@ async function seedOrders({ products, users }: { users: User[]; products: Produc
 }
 
 async function seed(): Promise<void> {
-  console.log('Initializing database...');
   dataSource.setOptions({ database: DATABASE_SEED_PATH });
   dataSource.driver.database = DATABASE_SEED_PATH;
   await dataSource.initialize();
   await dataSource.synchronize(true);
 
-  console.log('Seeding media...');
   const mediaList = await seedMediaFiles();
 
-  console.log('Seeding users...');
   const users = await seedUsers({ mediaList });
 
-  console.log('Seeding products...');
   const products = await seedProducts({ mediaList });
 
-  console.log('Seeding feature sections...');
   await seedFeatureSections({ products });
 
-  console.log('Seeding reviews...');
   await seedReviews({ products, users });
 
-  console.log('Seeding orders...');
   await seedOrders({ products, users });
 }
 
