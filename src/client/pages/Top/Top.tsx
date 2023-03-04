@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Helmet } from 'react-helmet';
+import React from 'react';
 
 import { Layout } from '../../components/application/Layout';
 import { ProductList } from '../../components/feature/ProductList';
@@ -17,11 +17,12 @@ export const Top: FC = () => {
     return null;
   }
 
+  React.useEffect(() => {
+    document.title = '買えるオーガニック';
+  }, []);
+
   return (
     <>
-      <Helmet>
-        <title>買えるオーガニック</title>
-      </Helmet>
       <Layout>
         <div>
           <ProductHeroImage product={recommendation.product} title="今週のオススメ" />

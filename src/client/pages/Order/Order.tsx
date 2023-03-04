@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Helmet } from 'react-helmet';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Layout } from '../../components/application/Layout';
@@ -28,6 +28,9 @@ export const Order: FC = () => {
     navigate('/');
     return null;
   }
+  React.useEffect(() => {
+    document.title = '購入手続き';
+  }, []);
 
   const renderContents = () => {
     if (!authUser || order == undefined || order.items.length === 0) {
@@ -84,9 +87,6 @@ export const Order: FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>購入手続き</title>
-      </Helmet>
       <Layout>
         <WidthRestriction>{renderContents()}</WidthRestriction>
       </Layout>
