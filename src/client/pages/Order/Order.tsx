@@ -2,7 +2,6 @@ import type { FC } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Layout } from '../../components/application/Layout';
 import { WidthRestriction } from '../../components/foundation/WidthRestriction';
 import { OrderForm } from '../../components/order/OrderForm';
 import { OrderPreview } from '../../components/order/OrderPreview';
@@ -88,9 +87,7 @@ export const Order: FC = () => {
 
   return (
     <>
-      <Layout>
-        <WidthRestriction>{renderContents()}</WidthRestriction>
-      </Layout>
+      <WidthRestriction>{renderContents()}</WidthRestriction>
     </>
   );
 };

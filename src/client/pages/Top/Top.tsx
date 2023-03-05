@@ -1,7 +1,5 @@
-import type { FC } from 'react';
-import React from 'react';
+import { FC, useEffect } from 'react';
 
-import { Layout } from '../../components/application/Layout';
 import { ProductList } from '../../components/feature/ProductList';
 import { ProductHeroImage } from '../../components/product/ProductHeroImage';
 import { useFeatures } from '../../hooks/useFeatures';
@@ -13,32 +11,29 @@ export const Top: FC = () => {
   const { recommendation } = useRecommendation();
   const { features } = useFeatures();
 
+  useEffect(() => {
+    document.title = '買えるオーガニック';
+  }, []);
+
   if (recommendation === undefined || features === undefined) {
     return null;
   }
 
-  React.useEffect(() => {
-    document.title = '買えるオーガニック';
-  }, []);
-
   return (
     <>
-      <Layout>
-        <div>
-          <ProductHeroImage product={recommendation.product} title="今週のオススメ" />
-
-          <div className={styles.featureList()}>
-            {features.map((featureSection) => {
-              return (
-                <div key={featureSection.id} className={styles.feature()}>
-                  <h2 className={styles.featureHeading()}>{featureSection.title}</h2>
-                  <ProductList featureSection={featureSection} />
-                </div>
-              );
-            })}
-          </div>
+      <div>
+        <ProductHeroImage product={recommendation.product} title="今週のオススメ" />
+        <div className={styles.featureList()}>
+          {features.map((featureSection) => {
+            return (
+              <div key={featureSection.id} className={styles.feature()}>
+                <h2 className={styles.featureHeading()}>{featureSection.title}</h2>
+                <ProductList featureSection={featureSection} />
+              </div>
+            );
+          })}
         </div>
-      </Layout>
+      </div>
     </>
   );
 };
