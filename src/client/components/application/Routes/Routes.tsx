@@ -14,14 +14,12 @@ export const Routes: FC = () => {
   useScrollToTop();
 
   return (
-    <Layout>
-      <Router.Routes>
-        <Router.Route element={<Top />} path="/" />
-        <Router.Route element={<ProductDetail />} path="/product/:productId" />
-        <Router.Route element={<Order />} path="/order" />
-        <Router.Route element={<OrderComplete />} path="/order/complete" />
-        <Router.Route element={<NotFound />} path="*" />
-      </Router.Routes>
-    </Layout>
+    <Router.Routes>
+      <Router.Route element={<Top />} path="/" />
+      <Router.Route element={<ProductDetail />} path="/product/:productId" />
+      <Router.Route element={<Order />} path="/order" />
+      <Router.Route element={<OrderComplete />} path="/order/complete" />
+      <Router.Route element={<NotFound />} path="*" />
+    </Router.Routes>
   );
 };

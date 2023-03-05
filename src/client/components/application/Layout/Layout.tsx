@@ -1,4 +1,6 @@
-import type { FC, ReactNode } from 'react';
+import { FC, ReactNode, Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Fallback } from '../../../pages/Fallback';
 
 import { Footer } from '../../navigators/Footer/Footer';
 import { Header } from '../../navigators/Header/Header';
@@ -12,7 +14,11 @@ type Props = {
 export const Layout: FC<Props> = ({ children }) => (
   <>
     <Header />
-    <main className={styles.container()}>{children}</main>
+    <main className={styles.container()}>
+      <ErrorBoundary fallbackRender={Fallback}>
+        <Suspense fallback={null}>{children}</Suspense>
+      </ErrorBoundary>
+    </main>
     <Footer />
   </>
 );

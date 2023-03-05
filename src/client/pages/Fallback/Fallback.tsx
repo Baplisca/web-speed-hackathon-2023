@@ -11,14 +11,12 @@ export const Fallback: FC = () => {
   }, []);
   return (
     <>
-      <Layout>
-        <div className={styles.container()}>
-          <div className={styles.inner()}>
-            <p className={styles.mainParagraph()}>エラーが発生しました</p>
-            <p className={styles.subParagraph()}>Some error has occurred</p>
-          </div>
+      <div className={styles.container()}>
+        <div className={styles.inner()}>
+          <p className={styles.mainParagraph()}>エラーが発生しました</p>
+          <p className={styles.subParagraph()}>Some error has occurred</p>
         </div>
-      </Layout>
+      </div>
     </>
   );
 };
