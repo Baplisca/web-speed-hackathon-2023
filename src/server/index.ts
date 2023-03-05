@@ -31,7 +31,7 @@ async function init(): Promise<void> {
   app.use(session({}, app));
 
   app.use(async (ctx, next) => {
-    ctx.set('Cache-Control', 'max-age=3600');
+    ctx.set('Cache-Control', 'no-store');
     await next();
   });
 

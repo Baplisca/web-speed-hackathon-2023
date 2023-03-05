@@ -15,7 +15,7 @@ export default defineConfig(async () => {
         module: '/src/client/index.tsx',
         title: '買えるオーガニック',
       }),
-      viteCompression({ algorithm: 'brotliCompress' }),
+      // viteCompression({ algorithm: 'brotliCompress' }),
     ],
   };
 });
