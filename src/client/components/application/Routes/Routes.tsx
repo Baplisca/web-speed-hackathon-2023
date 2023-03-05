@@ -6,7 +6,6 @@ import { Order } from '../../../pages/Order';
 import { OrderComplete } from '../../../pages/OrderComplete';
 import { ProductDetail } from '../../../pages/ProductDetail';
 import { Top } from '../../../pages/Top';
-import { Layout } from '../Layout';
 
 import { useScrollToTop } from './hooks';
 
