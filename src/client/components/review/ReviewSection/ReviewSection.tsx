@@ -1,6 +1,6 @@
+import equal from 'fast-deep-equal';
 import type { FormikErrors } from 'formik';
 import { useFormik } from 'formik';
-import _ from 'lodash';
 import type { FC } from 'react';
 import { memo } from 'react';
 import * as z from 'zod';
@@ -26,51 +26,54 @@ type ReviewForm = {
   comment: string;
 };
 
-export const ReviewSection: FC<Props> = memo(({ hasSignedIn, onSubmitReview, reviews }) => {
-  const formik = useFormik<ReviewForm>({
-    initialValues: {
-      comment: '',
-    },
-    async onSubmit(value, { resetForm }) {
-      onSubmitReview(value);
-      resetForm();
-    },
-    validate(values) {
-      const errors: FormikErrors<ReviewForm> = {};
-      if (values.comment != '' && !commentSchema.safeParse(values.comment).success) {
-        errors['comment'] = '64 文字以内でコメントしてください';
-      }
-      return errors;
-    },
-    validateOnChange: true,
-  });
+export const ReviewSection: FC<Props> = memo(
+  ({ hasSignedIn, onSubmitReview, reviews }) => {
+    const formik = useFormik<ReviewForm>({
+      initialValues: {
+        comment: '',
+      },
+      async onSubmit(value, { resetForm }) {
+        onSubmitReview(value);
+        resetForm();
+      },
+      validate(values) {
+        const errors: FormikErrors<ReviewForm> = {};
+        if (values.comment != '' && !commentSchema.safeParse(values.comment).success) {
+          errors['comment'] = '64 文字以内でコメントしてください';
+        }
+        return errors;
+      },
+      validateOnChange: true,
+    });
 
-  return (
-    <div>
-      {reviews != null ? <ReviewList reviews={reviews} /> : null}
-      {hasSignedIn && (
-        <form className={styles.form()} data-testid="form-review" onSubmit={formik.handleSubmit}>
-          <div className={styles.commentTextAreaWrapper()}>
-            <TextArea
-              required
-              id="comment"
-              label="レビューを送信する"
-              onChange={formik.handleChange}
-              placeholder="こちらの野菜はいかがでしたか？"
-              rows={6}
-              value={formik.values.comment}
-            />
-            <p className={styles.error()}>{formik.errors.comment}</p>
-          </div>
-          <div className={styles.submitButton()}>
-            <PrimaryButton size="base" type="submit">
-              送信
-            </PrimaryButton>
-          </div>
-        </form>
-      )}
-    </div>
-  );
-}, _.isEqual);
+    return (
+      <div>
+        {reviews != null ? <ReviewList reviews={reviews} /> : null}
+        {hasSignedIn && (
+          <form className={styles.form()} data-testid="form-review" onSubmit={formik.handleSubmit}>
+            <div className={styles.commentTextAreaWrapper()}>
+              <TextArea
+                required
+                id="comment"
+                label="レビューを送信する"
+                onChange={formik.handleChange}
+                placeholder="こちらの野菜はいかがでしたか？"
+                rows={6}
+                value={formik.values.comment}
+              />
+              <p className={styles.error()}>{formik.errors.comment}</p>
+            </div>
+            <div className={styles.submitButton()}>
+              <PrimaryButton size="base" type="submit">
+                送信
+              </PrimaryButton>
+            </div>
+          </form>
+        )}
+      </div>
+    );
+  },
+  (prev, next) => equal(prev, next),
+);
 
 ReviewSection.displayName = 'ReviewSection';

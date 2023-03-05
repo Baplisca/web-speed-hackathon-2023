@@ -5,6 +5,7 @@ module.exports = {
     node: true,
   },
   extends: [
+    'react-app',
     'eslint:recommended',
     'plugin:import/recommended',
     'plugin:react/recommended',
@@ -29,6 +30,7 @@ module.exports = {
       },
     ],
     'import/namespace': ['off'],
+    'import/no-named-as-default-member': 0,
     'import/order': [
       'error',
       {

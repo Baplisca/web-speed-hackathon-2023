@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import equal from 'fast-deep-equal';
 import type { FC } from 'react';
 import { memo } from 'react';
 
@@ -66,7 +66,7 @@ export const ProductPurchaseSection: FC<Props> = memo(
       </div>
     );
   },
-  _.isEqual,
+  (prev, next) => equal(prev, next),
 );
 
 ProductPurchaseSection.displayName = 'ProductPurchaseSection';

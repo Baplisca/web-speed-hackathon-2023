@@ -1,7 +1,7 @@
 import CanvasKitInit from 'canvaskit-wasm';
 import CanvasKitWasmUrl from 'canvaskit-wasm/bin/canvaskit.wasm?url';
 import classNames from 'classnames';
-import _ from 'lodash';
+import equal from 'fast-deep-equal';
 import { memo, useEffect, useState } from 'react';
 import type { FC } from 'react';
 
@@ -14,13 +14,13 @@ import { WidthRestriction } from '../../foundation/WidthRestriction';
 import * as styles from './ProductHeroImage.styles';
 
 async function loadImageAsDataURL(url: string): Promise<string> {
-  const CanvasKit = await CanvasKitInit({
-    // WASM ファイルの URL を渡す
-    locateFile: () => CanvasKitWasmUrl,
-  });
-
-  // 画像を読み込む
-  const data = await fetch(url).then((res) => res.arrayBuffer());
+  const [CanvasKit, data] = await Promise.all([
+    CanvasKitInit({
+      // WASM ファイルの URL を渡す
+      locateFile: () => CanvasKitWasmUrl,
+    }),
+    fetch(url).then((res) => res.arrayBuffer()),
+  ]);
   const image = CanvasKit.MakeImageFromEncoded(data);
   if (image == null) {
     // 読み込みに失敗したとき、透明な 1x1 GIF の Data URL を返却する
@@ -40,58 +40,61 @@ type Props = {
   title: string;
 };
 
-export const ProductHeroImage: FC<Props> = memo(({ product, title }) => {
-  const thumbnailFile = product.media.find((productMedia) => productMedia.isThumbnail)?.file;
+export const ProductHeroImage: FC<Props> = memo(
+  ({ product, title }) => {
+    const thumbnailFile = product.media.find((productMedia) => productMedia.isThumbnail)?.file;
 
-  const [imageDataUrl, setImageDataUrl] = useState<string>();
+    const [imageDataUrl, setImageDataUrl] = useState<string>();
 
-  useEffect(() => {
-    if (thumbnailFile == null) {
-      return;
+    useEffect(() => {
+      if (thumbnailFile == null) {
+        return;
+      }
+      loadImageAsDataURL(thumbnailFile.filename).then((dataUrl) => setImageDataUrl(dataUrl));
+    }, [thumbnailFile]);
+
+    if (imageDataUrl === undefined) {
+      return null;
     }
-    loadImageAsDataURL(thumbnailFile.filename).then((dataUrl) => setImageDataUrl(dataUrl));
-  }, [thumbnailFile]);
 
-  if (imageDataUrl === undefined) {
-    return null;
-  }
+    return (
+      <GetDeviceType>
+        {({ deviceType }) => {
+          return (
+            <WidthRestriction>
+              <Anchor href={`/product/${product.id}`}>
+                <div className={styles.container()}>
+                  <AspectRatio ratioHeight={9} ratioWidth={16}>
+                    <img loading="eager" className={styles.image()} src={imageDataUrl} />
+                  </AspectRatio>
 
-  return (
-    <GetDeviceType>
-      {({ deviceType }) => {
-        return (
-          <WidthRestriction>
-            <Anchor href={`/product/${product.id}`}>
-              <div className={styles.container()}>
-                <AspectRatio ratioHeight={9} ratioWidth={16}>
-                  <img className={styles.image()} src={imageDataUrl} />
-                </AspectRatio>
-
-                <div className={styles.overlay()}>
-                  <p
-                    className={classNames(styles.title(), {
-                      [styles.title__desktop()]: deviceType === DeviceType.DESKTOP,
-                      [styles.title__mobile()]: deviceType === DeviceType.MOBILE,
-                    })}
-                  >
-                    {title}
-                  </p>
-                  <p
-                    className={classNames(styles.description(), {
-                      [styles.description__desktop()]: deviceType === DeviceType.DESKTOP,
-                      [styles.description__mobile()]: deviceType === DeviceType.MOBILE,
-                    })}
-                  >
-                    {product.name}
-                  </p>
+                  <div className={styles.overlay()}>
+                    <p
+                      className={classNames(styles.title(), {
+                        [styles.title__desktop()]: deviceType === DeviceType.DESKTOP,
+                        [styles.title__mobile()]: deviceType === DeviceType.MOBILE,
+                      })}
+                    >
+                      {title}
+                    </p>
+                    <p
+                      className={classNames(styles.description(), {
+                        [styles.description__desktop()]: deviceType === DeviceType.DESKTOP,
+                        [styles.description__mobile()]: deviceType === DeviceType.MOBILE,
+                      })}
+                    >
+                      {product.name}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Anchor>
-          </WidthRestriction>
-        );
-      }}
-    </GetDeviceType>
-  );
-}, _.isEqual);
+              </Anchor>
+            </WidthRestriction>
+          );
+        }}
+      </GetDeviceType>
+    );
+  },
+  (prev, next) => equal(prev, next),
+);
 
 ProductHeroImage.displayName = 'ProductHeroImage';

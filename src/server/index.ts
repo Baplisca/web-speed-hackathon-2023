@@ -61,13 +61,10 @@ async function init(): Promise<void> {
 
   app.use(async (ctx) => await send(ctx, rootResolve('/dist/index.html')));
 
-  httpServer.listen({ port: PORT }, () => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}`);
-  });
+  httpServer.listen({ port: PORT });
 
   gracefulShutdown(httpServer, {
     async onShutdown(signal) {
-      console.log(`Received signal to terminate: ${signal}`);
       await apolloServer.stop();
       await dataSource.destroy();
     },
