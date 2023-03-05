@@ -131,7 +131,7 @@ async function seedMediaFiles(): Promise<MediaFile[]> {
   const publicDir = path.resolve(__dirname, '../public');
   const imageDir = path.resolve(publicDir, 'images');
   const videoDir = path.resolve(publicDir, 'videos');
-  const files = (await Promise.all([await getFileList(imageDir), await getFileList(videoDir)])).flat();
+  const files = (await Promise.all([getFileList(imageDir), getFileList(videoDir)])).flat();
   const filenames = files.map((file) => {
     const relativePath = path.relative(publicDir, file);
     return '/' + relativePath;
@@ -176,8 +176,7 @@ async function seedUsers({ mediaList }: { mediaList: MediaFile[] }): Promise<Use
     }
   }
 
-  await insert(users);
-  await insert(profiles);
+  await Promise.all([insert(users), insert(profiles)]);
 
   return users;
 }
@@ -253,10 +252,7 @@ async function seedProducts({ mediaList }: { mediaList: MediaFile[] }): Promise<
     }
   }
 
-  await insert(products);
-  await insert(recommendations);
-  await insert(offers);
-
+  await Promise.all([insert(products), insert(recommendations), insert(offers)]);
   return products;
 }
 
@@ -280,8 +276,7 @@ async function seedFeatureSections({ products }: { products: Product[] }): Promi
 
     section.items = items;
 
-    await insert([section]);
-    await insert(items);
+    await Promise.all([insert([section]), insert(items)]);
   }
 }
 
@@ -338,8 +333,7 @@ async function seedOrders({ products, users }: { users: User[]; products: Produc
     order.address = '';
     order.isOrdered = false;
 
-    await insert([order]);
-    await insert(order.items);
+    await Promise.all([insert([order]), insert(order.items)]);
   }
 }
 
@@ -351,15 +345,13 @@ async function seed(): Promise<void> {
 
   const mediaList = await seedMediaFiles();
 
-  const users = await seedUsers({ mediaList });
+  const [users, products] = await Promise.all([seedUsers({ mediaList }), seedProducts({ mediaList })]);
 
-  const products = await seedProducts({ mediaList });
-
-  await seedFeatureSections({ products });
-
-  await seedReviews({ products, users });
-
-  await seedOrders({ products, users });
+  await Promise.all([
+    seedFeatureSections({ products }),
+    seedReviews({ products, users }),
+    seedOrders({ products, users }),
+  ]);
 }
 
 seed().catch((err) => {
