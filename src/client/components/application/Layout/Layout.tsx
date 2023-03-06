@@ -14,11 +14,7 @@ type Props = {
 export const Layout: FC<Props> = ({ children }) => (
   <>
     <Header />
-    <main className={styles.container()}>
-      <ErrorBoundary fallbackRender={Fallback}>
-        <Suspense fallback={null}>{children}</Suspense>
-      </ErrorBoundary>
-    </main>
+    <main className={styles.container()}>{children}</main>
     <Footer />
   </>
 );
